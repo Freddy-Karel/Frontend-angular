@@ -1,0 +1,123 @@
+<div class="dashboard-page min-h-screen transition-colors duration-300">
+  <app-navbar></app-navbar>
+
+  <main class="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
+    <section class="dashboard-header mb-7 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+      <div class="min-w-0">
+        <p class="section-kicker">Espace de travail</p>
+        <h1 class="mt-1 text-3xl font-bold">Tableau de bord</h1>
+        <p class="mt-2 max-w-2xl text-sm">Pilotez vos tableaux, vos membres et vos projets depuis une vue unifiee.</p>
+      </div>
+      <button (click)="openBoardModal()" class="btn-primary inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Nouveau board
+      </button>
+    </section>
+
+    @if (loading) {
+      <section class="dashboard-state">
+        <div class="h-10 w-10 animate-spin rounded-full border-4 border-t-transparent" [style.border-color]="'var(--accent)'"></div>
+        <p>Chargement des tableaux...</p>
+      </section>
+    } @else if (error) {
+      <section class="dashboard-alert">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>{{ error }}</span>
+      </section>
+    } @else if (boards.length === 0) {
+      <section class="empty-dashboard">
+        <div class="empty-icon">
+          <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        </div>
+        <h2>Aucun board pour le moment</h2>
+        <p>Creez votre premier tableau pour commencer a organiser votre travail.</p>
+        <button (click)="openBoardModal()" class="btn-primary mt-5 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Creer un board
+        </button>
+      </section>
+    } @else if (filteredBoards().length === 0) {
+      <section class="empty-dashboard">
+        <div class="empty-icon">
+          <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <h2>Aucun board trouve</h2>
+        <p>Aucun tableau ne correspond a votre recherche.</p>
+      </section>
+    } @else {
+      <section class="dashboard-grid">
+        @for (board of filteredBoards(); track board.id) {
+          <article (click)="navigateToBoard(board.id)" class="board-card group" [class.has-cover]="hasCoverImage(board)" [style.--board-preview-bg]="getBoardBackground(board)" [style.--board-card-accent]="getBoardAccent(board)">
+            <div class="board-preview">
+              <div class="board-card-actions">
+                <label class="board-action" title="Changer l'image" (click)="$event.stopPropagation()">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  <input type="file" accept="image/*" class="sr-only" (change)="updateBoardCover(board, $event)">
+                </label>
+                @if (board.coverImageUrl) {
+                  <button type="button" class="board-action" title="Retirer l'image" (click)="clearBoardCover(board, $event)">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                }
+                <button type="button" class="board-action danger" title="Supprimer" (click)="promptDeleteBoard(board, $event)">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+              </div>
+              @if (!board.coverImageUrl) {
+                <div class="board-preview-toolbar">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="board-preview-lists">
+                  <span></span><span></span><span></span>
+                </div>
+              } @else {
+                <div class="board-cover-shade"></div>
+              }
+            </div>
+            <div class="board-card-body">
+              <div class="min-w-0">
+                <h2>{{ board.title }}</h2>
+                <p>{{ board.description || 'Aucune description' }}</p>
+              </div>
+              <div class="board-card-footer">
+                <div class="flex -space-x-2">
+                  @for (member of (board.members || []).slice(0, 4); track member.id || member.userId) {
+                    <span class="dashboard-avatar">{{ getInitials(member) }}</span>
+                  }
+                  @if ((board.members || []).length > 4) {
+                    <span class="dashboard-avatar">+{{ (board.members || []).length - 4 }}</span>
+                  }
+                </div>
+                <span>{{ board.members?.length || 0 }} membre(s)</span>
+              </div>
+            </div>
+          </article>
+        }
+
+        <article (click)="openBoardModal()" class="create-board-card">
+          <div class="create-board-icon">
+            <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          </div>
+          <h2>Creer un nouveau board</h2>
+          <p>Ajoutez un espace pour un projet, une equipe ou un sprint.</p>
+        </article>
+      </section>
+    }
+  </main>
+
+  @if (showBoardModal) {
+    <app-board-modal (close)="closeBoardModal()" (create)="createBoard($event)" />
+  }
+
+  @if (showDeleteConfirmModal) {
+    <app-confirm-modal
+      [isOpen]="showDeleteConfirmModal"
+      title="Supprimer le board"
+      [message]="'Le board ' + (boardToDelete?.title || '') + ' et toutes ses listes/cartes seront supprimes.'"
+      confirmText="Supprimer"
+      cancelText="Annuler"
+      type="danger"
+      (confirm)="confirmDeleteBoard()"
+      (cancel)="cancelDeleteBoard()" />
+  }
+</div>

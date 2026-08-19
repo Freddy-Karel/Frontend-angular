@@ -1,0 +1,172 @@
+<div class="min-h-screen transition-colors duration-500"
+     [style.background]="'linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%)'">
+  <app-navbar></app-navbar>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wider" [style.color]="'var(--accent)'">Espace personnel</p>
+        <h1 class="mt-2 text-3xl font-bold" [style.color]="'var(--text-primary)'">Parametres</h1>
+        <p class="mt-2 max-w-2xl text-sm" [style.color]="'var(--text-secondary)'">
+          Ajustez l'apparence, les notifications et les preferences de votre espace de travail.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button type="button"
+                (click)="resetSettings()"
+                class="px-4 py-2 rounded-lg text-sm font-semibold border transition-colors"
+                [style.background-color]="'var(--bg-secondary)'"
+                [style.border-color]="'var(--border-color)'"
+                [style.color]="'var(--text-primary)'">
+          Reinitialiser
+        </button>
+        <button type="button"
+                (click)="onSubmit()"
+                [disabled]="loading"
+                class="px-5 py-2 rounded-lg text-sm font-semibold text-white btn-primary disabled:opacity-50">
+          @if (loading) { Enregistrement... } @else { Enregistrer }
+        </button>
+      </div>
+    </header>
+
+    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
+      <aside class="lg:sticky lg:top-24 h-fit rounded-lg border overflow-hidden"
+             [style.background-color]="'var(--bg-secondary)'"
+             [style.border-color]="'var(--border-color)'">
+        <div class="p-4 border-b" [style.border-color]="'var(--border-color)'">
+          <p class="text-sm font-semibold" [style.color]="'var(--text-primary)'">Vue d'ensemble</p>
+          <p class="mt-1 text-xs" [style.color]="'var(--text-muted)'">Utilisateur connecte</p>
+        </div>
+        <div class="p-4 space-y-4">
+          <div>
+            <p class="text-xs uppercase tracking-wider" [style.color]="'var(--text-muted)'">Theme actif</p>
+            <p class="mt-1 text-sm font-semibold" [style.color]="'var(--text-primary)'">
+              {{ getThemeName() }}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-wider" [style.color]="'var(--text-muted)'">Compte</p>
+            <p class="mt-1 text-sm font-semibold truncate" [style.color]="'var(--text-primary)'">{{ user()?.email || 'Non charge' }}</p>
+          </div>
+          <div class="flex items-center justify-between border-t pt-4" [style.border-color]="'var(--border-color)'">
+            <span class="text-sm" [style.color]="'var(--text-secondary)'">Version</span>
+            <span class="text-sm font-semibold" [style.color]="'var(--text-primary)'">1.0.0</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="rounded-lg border overflow-hidden"
+               [style.background-color]="'var(--bg-secondary)'"
+               [style.border-color]="'var(--border-color)'">
+        <div class="px-6 py-5 border-b" [style.border-color]="'var(--border-color)'">
+          <h2 class="text-lg font-semibold" [style.color]="'var(--text-primary)'">Apparence</h2>
+          <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Choisissez une palette appliquee a toute l'application.</p>
+        </div>
+
+        <div class="divide-y" [style.border-color]="'var(--border-color)'">
+          <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+              @for (theme of themes; track theme.id) {
+                <button type="button"
+                        (click)="selectTheme(theme.id)"
+                        class="text-left rounded-lg border p-4 transition-all"
+                        [style.background-color]="currentTheme() === theme.id ? 'var(--accent-light)' : 'var(--bg-secondary)'"
+                        [style.border-color]="currentTheme() === theme.id ? 'var(--accent)' : 'var(--border-color)'">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="h-8 w-8 rounded-md border" [style.background-color]="theme.swatch" [style.border-color]="'var(--border-color)'"></span>
+                    @if (currentTheme() === theme.id) {
+                      <span class="text-xs font-semibold" [style.color]="'var(--accent)'">Actif</span>
+                    }
+                  </div>
+                  <p class="mt-3 text-sm font-semibold" [style.color]="'var(--text-primary)'">{{ theme.name }}</p>
+                  <p class="mt-1 text-xs leading-5" [style.color]="'var(--text-secondary)'">{{ theme.description }}</p>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="px-6 py-5">
+            <h2 class="text-lg font-semibold" [style.color]="'var(--text-primary)'">Notifications</h2>
+            <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Controlez les canaux et la frequence de vos alertes.</p>
+          </div>
+
+          <div class="divide-y" [style.border-color]="'var(--border-color)'">
+            <label class="flex items-center justify-between gap-6 px-6 py-5 cursor-pointer">
+              <div>
+                <p class="text-sm font-semibold" [style.color]="'var(--text-primary)'">Notifications par email</p>
+                <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Recevoir les changements importants par email.</p>
+              </div>
+              <input type="checkbox" formControlName="emailNotifications" class="sr-only">
+              <span class="relative h-6 w-11 rounded-full transition-colors flex-shrink-0"
+                    [style.background-color]="settingsForm.get('emailNotifications')?.value ? 'var(--accent)' : 'var(--border-color)'">
+                <span class="absolute top-1 h-4 w-4 rounded-full bg-white transition-transform"
+                      [style.left]="settingsForm.get('emailNotifications')?.value ? '23px' : '4px'"></span>
+              </span>
+            </label>
+
+            <label class="flex items-center justify-between gap-6 px-6 py-5 cursor-pointer">
+              <div>
+                <p class="text-sm font-semibold" [style.color]="'var(--text-primary)'">Notifications push</p>
+                <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Recevoir les notifications dans le navigateur.</p>
+              </div>
+              <input type="checkbox" formControlName="pushNotifications" class="sr-only">
+              <span class="relative h-6 w-11 rounded-full transition-colors flex-shrink-0"
+                    [style.background-color]="settingsForm.get('pushNotifications')?.value ? 'var(--accent)' : 'var(--border-color)'">
+                <span class="absolute top-1 h-4 w-4 rounded-full bg-white transition-transform"
+                      [style.left]="settingsForm.get('pushNotifications')?.value ? '23px' : '4px'"></span>
+              </span>
+            </label>
+
+            <label class="flex items-center justify-between gap-6 px-6 py-5 cursor-pointer">
+              <div>
+                <p class="text-sm font-semibold" [style.color]="'var(--text-primary)'">Resume hebdomadaire</p>
+                <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Recevoir un recapitulatif regulier de votre activite.</p>
+              </div>
+              <input type="checkbox" formControlName="weeklyDigest" class="sr-only">
+              <span class="relative h-6 w-11 rounded-full transition-colors flex-shrink-0"
+                    [style.background-color]="settingsForm.get('weeklyDigest')?.value ? 'var(--accent)' : 'var(--border-color)'">
+                <span class="absolute top-1 h-4 w-4 rounded-full bg-white transition-transform"
+                      [style.left]="settingsForm.get('weeklyDigest')?.value ? '23px' : '4px'"></span>
+              </span>
+            </label>
+          </div>
+
+          <div class="px-6 py-5 grid grid-cols-1 md:grid-cols-[1fr_280px] gap-4 md:items-center">
+            <div>
+              <p class="text-sm font-semibold" [style.color]="'var(--text-primary)'">Langue</p>
+              <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Selectionnez la langue de l'interface.</p>
+            </div>
+            <select formControlName="language"
+                    class="w-full px-4 py-2.5 border rounded-lg focus:outline-none text-sm font-medium"
+                    [style.background-color]="'var(--input-bg)'"
+                    [style.border-color]="'var(--border-color)'"
+                    [style.color]="'var(--text-primary)'">
+              <option value="fr">Francais</option>
+              <option value="en">English</option>
+              <option value="es">Espanol</option>
+              <option value="de">Deutsch</option>
+            </select>
+          </div>
+
+          <div class="px-6 py-5" [style.background-color]="'var(--error-bg)'">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 md:items-center">
+              <div>
+                <h2 class="text-lg font-semibold" [style.color]="'var(--error)'">Zone de danger</h2>
+                <p class="mt-1 text-sm" [style.color]="'var(--text-secondary)'">Actions sensibles du compte. Aucune suppression n'est executee sans confirmation.</p>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" class="px-4 py-2 rounded-lg text-sm font-semibold border" [style.background-color]="'var(--bg-secondary)'" [style.border-color]="'var(--error-border)'" [style.color]="'var(--error)'">
+                  Supprimer les donnees
+                </button>
+                <button type="button" class="px-4 py-2 rounded-lg text-sm font-semibold text-white btn-danger">
+                  Supprimer le compte
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+  </main>
+</div>

@@ -1,0 +1,32 @@
+:host { display: block; }
+
+.notification-trigger { position: relative; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 8px; color: var(--text-muted); transition: background-color 160ms ease, color 160ms ease; }
+.notification-trigger:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.notification-badge { position: absolute; top: 3px; right: 3px; min-width: 16px; height: 16px; padding: 0 4px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; color: white; background: var(--error); font-size: 10px; font-weight: 800; }
+.notification-dropdown { position: absolute; right: 0; z-index: 50; width: 384px; max-width: calc(100vw - 2rem); margin-top: 8px; overflow: hidden; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); box-shadow: 0 22px 44px -24px var(--shadow-color); }
+.notification-dropdown-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px; border-bottom: 1px solid var(--border-color); }
+.notification-dropdown-header h2 { font-size: 15px; font-weight: 800; letter-spacing: 0; }
+.notification-dropdown-header p { margin-top: 2px; color: var(--text-muted); font-size: 12px; }
+.notification-link { color: var(--accent); font-size: 12px; font-weight: 700; }
+.notification-close { width: 28px; height: 28px; border-radius: 6px; color: var(--text-muted); }
+.notification-close:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.notification-dropdown-body { max-height: 390px; overflow-y: auto; }
+.notification-panel-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; padding: 24px; text-align: center; color: var(--text-secondary); }
+.notification-panel-empty-icon { width: 58px; height: 58px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--accent); background: var(--accent-light); margin-bottom: 12px; }
+.notification-panel-row { display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background-color 160ms ease; }
+.notification-panel-row:hover { background: var(--bg-tertiary); }
+.notification-panel-row.is-unread { background: color-mix(in srgb, var(--accent-light) 60%, var(--bg-secondary) 40%); }
+.notification-panel-row h3 { color: var(--text-primary); font-size: 13px; font-weight: 700; letter-spacing: 0; }
+.notification-panel-row p { margin-top: 3px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.notification-panel-row time { display: block; margin-top: 5px; color: var(--text-muted); font-size: 11px; }
+.notification-type { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: white; background: var(--accent); font-size: 11px; font-weight: 800; flex-shrink: 0; }
+.type-success { background: var(--success); }
+.type-warning { background: var(--warning); }
+.type-error { background: var(--error); }
+.unread-dot { width: 7px; height: 7px; margin-top: 5px; border-radius: 999px; background: var(--accent); flex-shrink: 0; }
+.notification-delete { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: var(--text-muted); opacity: 0; transition: opacity 160ms ease, color 160ms ease, background-color 160ms ease; }
+.notification-panel-row:hover .notification-delete { opacity: 1; }
+.notification-delete:hover { color: var(--error); background: var(--error-bg); }
+.notification-dropdown-footer { padding: 10px; border-top: 1px solid var(--border-color); }
+.notification-dropdown-footer a { display: block; width: 100%; padding: 8px; border-radius: 6px; color: var(--text-secondary); text-align: center; font-size: 13px; text-decoration: none; }
+.notification-dropdown-footer a:hover { background: var(--bg-tertiary); color: var(--text-primary); }

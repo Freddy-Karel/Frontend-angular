@@ -1,0 +1,137 @@
+:host,
+.board-page { display: block; }
+.board-page { background: var(--page-bg); }
+
+.board-shell {
+  color: var(--overlay-text);
+  background: var(--board-bg) center / cover;
+}
+
+.board-state-overlay { background: rgba(0, 0, 0, .12); }
+.board-state-card { background: var(--board-panel-bg); border-color: var(--board-panel-border); }
+.board-toolbar {
+  min-height: 108px;
+  color: var(--overlay-text);
+  background: var(--board-topbar-bg);
+  border-color: var(--board-panel-border);
+}
+
+.board-icon-button,
+.list-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  transition: background-color .16s ease,color .16s ease,border-color .16s ease;
+}
+
+.board-icon-button {
+  color: var(--overlay-text);
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.board-icon-button:hover,
+.board-share-button:hover { background: rgba(255,255,255,.24); }
+
+.board-share-button,
+.board-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+.board-share-button {
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  color: var(--text-primary);
+  background: var(--board-panel-bg);
+  border: 1px solid var(--board-panel-border);
+  font-size: 14px;
+  font-weight: 700;
+}
+.board-chip {
+  gap: 4px;
+  height: 32px;
+  padding: 0 10px;
+  color: var(--overlay-text);
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.12);
+  font-size: 12px;
+}
+.board-chip strong { font-size: 13px; }
+
+.board-search {
+  color: var(--overlay-text);
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.2);
+}
+.board-search::placeholder { color: rgba(255,255,255,.7); }
+.board-search:focus {
+  border-color: rgba(255,255,255,.55) !important;
+  background: rgba(255,255,255,.22) !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.14);
+}
+.board-search-icon,
+.board-help-text { color: rgba(255,255,255,.76); }
+
+.member-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255,255,255,.72);
+  border-radius: 999px;
+  color: white;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 3px 8px rgba(15,23,42,.22);
+}
+.member-avatar.small { width: 26px; height: 26px; border-width: 1px; font-size: 10px; }
+.members-panel { color: var(--text-primary); }
+
+.kanban-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.45) rgba(0,0,0,.18); }
+.kanban-scroll::-webkit-scrollbar { height: 12px; }
+.kanban-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,.16); border-radius: 999px; }
+.kanban-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.48); border-radius: 999px; }
+
+.kanban-list,
+.kanban-list-add { width: 272px; min-width: 272px; }
+.kanban-list {
+  color: var(--board-card-text);
+  background: var(--board-list-bg);
+  border-color: var(--board-panel-border);
+}
+.kanban-list.is-collapsed { width: 56px; min-width: 56px; overflow: hidden; }
+.kanban-list.is-collapsed header { writing-mode: vertical-rl; min-height: 180px; }
+.kanban-list-add {
+  color: var(--text-primary);
+  background: var(--board-panel-bg);
+  border-color: var(--board-panel-border);
+}
+.kanban-list-add:hover { border-color: var(--accent); background: color-mix(in srgb, var(--board-panel-bg) 86%, var(--accent) 14%); }
+
+.list-icon { color: var(--board-muted-text); }
+.list-icon:hover,
+.add-card-button:hover { color: var(--board-card-text); background: color-mix(in srgb, var(--board-card-bg) 74%, var(--accent) 10%); }
+.kanban-card {
+  color: var(--board-card-text);
+  background: var(--board-card-bg);
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+}
+.kanban-card:hover { border-color: var(--accent); box-shadow: 0 10px 20px var(--shadow-color); transform: translateY(-1px); }
+.board-muted { color: var(--board-muted-text); }
+.progress-track { background: color-mix(in srgb, var(--board-muted-text) 18%, transparent); }
+.add-card-button { color: var(--board-muted-text); transition: background-color .16s ease,color .16s ease; }
+.card-item { cursor: grab; }
+.card-item:active { cursor: grabbing; }
+
+@media (max-width: 640px) {
+  .board-toolbar { min-height: 172px; }
+  .kanban-list,
+  .kanban-list-add { width: 82vw; min-width: 82vw; }
+}

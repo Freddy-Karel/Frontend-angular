@@ -1,0 +1,91 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 modal-overlay backdrop-blur-sm" (click)="onClose()"></div>
+  
+  <!-- Modal -->
+  <div class="relative modal-content rounded-2xl shadow-2xl w-full max-w-lg mx-4 transform transition-all">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold" [style.color]="'var(--text-primary)'">Créer un nouveau Board</h2>
+        <button (click)="onClose()" class="transition-colors"
+                [style.color]="'var(--text-muted)'">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="boardForm" (ngSubmit)="onCreate()" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium mb-2" [style.color]="'var(--text-secondary)'">Titre du board</label>
+          <input type="text" formControlName="title"
+                 class="w-full px-4 py-3 border rounded-xl focus:outline-none transition-all"
+                 [style.background-color]="'var(--input-bg)'"
+                 [style.border-color]="'var(--border-color)'"
+                 [style.color]="'var(--text-primary)'"
+                 (focus)="$any($event.target).style.borderColor = 'var(--accent)'"
+                 (blur)="$any($event.target).style.borderColor = 'var(--border-color)'"
+                 placeholder="Mon projet">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2" [style.color]="'var(--text-secondary)'">Description (optionnel)</label>
+          <textarea formControlName="description"
+                    rows="3"
+                    class="w-full px-4 py-3 border rounded-xl focus:outline-none transition-all resize-none"
+                    [style.background-color]="'var(--input-bg)'"
+                    [style.border-color]="'var(--border-color)'"
+                    [style.color]="'var(--text-primary)'"
+                    (focus)="$any($event.target).style.borderColor = 'var(--accent)'"
+                    (blur)="$any($event.target).style.borderColor = 'var(--border-color)'"
+                    placeholder="Description de votre projet..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-3" [style.color]="'var(--text-secondary)'">Style du board</label>
+          <div class="cover-preview mb-3" [style.background]="boardForm.value.coverImageUrl ? 'url(' + boardForm.value.coverImageUrl + ') center / cover' : boardForm.value.backgroundColor">
+            @if (!boardForm.value.coverImageUrl) {
+              <span>Apercu couleur</span>
+            }
+          </div>
+          <div class="flex flex-wrap gap-3">
+            @for (color of backgroundColors; track color) {
+              <button type="button"
+                      (click)="selectColor(color)"
+                      [class.is-selected]="boardForm.value.backgroundColor === color && !boardForm.value.coverImageUrl"
+                      [style.background-color]="color"
+                      class="color-swatch"
+                      title="Choisir cette couleur">
+              </button>
+            }
+          </div>
+          <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+            <label class="btn-secondary inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold">
+              Charger une image
+              <input type="file" accept="image/*" class="sr-only" (change)="onCoverFileSelected($event)">
+            </label>
+            @if (boardForm.value.coverImageUrl) {
+              <button type="button" (click)="clearCover()" class="btn-secondary rounded-lg px-4 py-2 text-sm font-semibold">Retirer l'image</button>
+            }
+          </div>
+          <p class="mt-2 text-xs" [style.color]="'var(--text-muted)'">Image locale, 900 Ko maximum.</p>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <button type="button"
+                  (click)="onClose()"
+                  class="flex-1 py-3 font-semibold rounded-xl transition-colors"
+                  [style.background-color]="'var(--bg-tertiary)'"
+                  [style.color]="'var(--text-primary)'">
+            Annuler
+          </button>
+          <button type="submit"
+                  [disabled]="boardForm.invalid"
+                  class="flex-1 py-3 text-white font-semibold rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-primary">
+            Créer le board
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

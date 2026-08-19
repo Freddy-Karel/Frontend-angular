@@ -1,0 +1,34 @@
+<div class="fixed bottom-4 right-4 z-[100] flex flex-col gap-3">
+  @for (toast of toasts; track toast.id) {
+    <div [ngClass]="{
+      'toast-success': toast.type === 'success',
+      'toast-error': toast.type === 'error',
+      'toast-warning': toast.type === 'warning',
+      'toast-info': toast.type === 'info'
+    }" 
+         class="animate-toast-enter shadow-lg rounded-lg p-4 min-w-[320px] max-w-md flex items-start gap-3 border backdrop-blur-md"
+         [style.background-color]="'var(--bg-secondary)'"
+         [style.border-color]="'var(--border-color)'">
+      
+      <div class="flex-shrink-0 mt-0.5"
+           [style.color]="toast.type === 'success' ? 'var(--success)' : toast.type === 'error' ? 'var(--error)' : toast.type === 'warning' ? 'var(--warning)' : 'var(--accent)'">
+        <span class="text-xl font-bold">{{ getIcon(toast.type) }}</span>
+      </div>
+      
+      <div class="flex-1">
+        <h4 class="font-semibold text-sm" [style.color]="'var(--text-primary)'">{{ toast.title }}</h4>
+        <p class="text-sm mt-1" [style.color]="'var(--text-secondary)'">{{ toast.message }}</p>
+      </div>
+      
+      <button (click)="removeToast(toast.id)" 
+              class="transition-colors flex-shrink-0"
+              [style.color]="'var(--text-muted)'"
+              (mouseenter)="$any($event.target).style.color = 'var(--text-primary)'"
+              (mouseleave)="$any($event.target).style.color = 'var(--text-muted)'">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  }
+</div>
