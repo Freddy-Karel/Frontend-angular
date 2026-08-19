@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class WebSocketService {
   private socket: Socket | null = null;
 
   connect(token: string): void {
-    this.socket = io('http://localhost:5000', {
+    this.socket = io(environment.socketUrl, {
       auth: { token },
       transports: ['websocket']
     });
