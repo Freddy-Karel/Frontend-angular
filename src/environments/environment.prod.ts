@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-api-url.com/api'
+  apiUrl: 'https://backend-angular-nu.vercel.app/api'  // Votre vrai backend Vercel
 };
